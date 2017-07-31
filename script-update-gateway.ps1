@@ -8,6 +8,7 @@
 #    3.2 upgrade it
 #
 #
+param([string]$version)
 
 function Get-CurrentGatewayVersion()
 {
@@ -47,19 +48,19 @@ function Get-LatestGatewayVersion()
 
 function Get-RegistryKeyValue
 {
-	param($registryPath)
+     param($registryPath)
 
     $is64Bits = Is-64BitSystem
-	if($is64Bits)
-	{
-		$baseKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry64)
-		return $baseKey.OpenSubKey($registryPath)
-	}
-	else
-	{
-		$baseKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry32)
-		return $baseKey.OpenSubKey($registryPath)
-	}
+     if($is64Bits)
+     {
+          $baseKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry64)
+          return $baseKey.OpenSubKey($registryPath)
+     }
+     else
+     {
+          $baseKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry32)
+          return $baseKey.OpenSubKey($registryPath)
+     }
 }
 
 
@@ -79,14 +80,13 @@ function Get-RedirectedUrl
 
 function Download-GatewayInstaller
 {
-    Write-Host "Start to download MSI"
-    $is64Bits = Is-64BitSystem
-    $uri = Get-RedirectedUrl
-    if ($is64Bits -ne $true)
-    {
-        $uri = $uri.Replace("64-bit", "32-bit")
-    }
+    Param (
+        [Parameter(Mandatory=$true)]
+        [String]$version
+    )
 
+    Write-Host "Start to download MSI"
+    $uri = Populate-Url $version
     $folder = New-TempDirectory
     $output = Join-Path $folder "DataManagementGateway.msi"
     (New-Object System.Net.WebClient).DownloadFile($uri, $output)
@@ -94,6 +94,31 @@ function Download-GatewayInstaller
     $msg = "New gateway MSI has been downloaded to " + $output
     Write-Host $msg
     return $output
+}
+
+function Populate-Url
+{
+    Param (
+        [Parameter(Mandatory=$true)]
+        [String]$version
+    )
+    
+    $uri = Get-RedirectedUrl
+    $uri = $uri.Substring(0, $uri.LastIndexOf('/') + 1)
+    $uri += "DataManagementGateway_$version ("
+    
+    $is64Bits = Is-64BitSystem
+    if ($is64Bits)
+    {
+        $uri += "64-bit"
+    }
+    else
+    {
+        $uri += "32-bit"
+    }
+    $uri += ").msi"
+
+    return $uri
 }
 
 function Install-Gateway
@@ -121,21 +146,26 @@ function New-TempDirectory {
 
 function Is-64BitSystem
 {
-	$computerName= $env:COMPUTERNAME
-	$osBit = (get-wmiobject win32_processor -computername $computerName).AddressWidth
-	return $osBit -eq '64'
+     $computerName= $env:COMPUTERNAME
+     $osBit = (get-wmiobject win32_processor -computername $computerName).AddressWidth
+     return $osBit -eq '64'
 }
 
 $currentVersion = Get-CurrentGatewayVersion
-$latestGatewayVersion = Get-LatestGatewayVersion
 
-if ($currentVersion -eq $latestGatewayVersion)
+$versionToInstall = $version
+if ([string]::IsNullOrEmpty($versionToInstall))
+{
+    $versionToInstall = Get-LatestGatewayVersion
+}
+
+if ($currentVersion -ge $versionToInstall)
 {
     Write-Host "Your gateway is latest, no update need..."
 }
 else
 {
-    $msi = Download-GatewayInstaller
+    $msi = Download-GatewayInstaller $versionToInstall
     Install-Gateway $msi
     Remove-Item -Path $msi -Force
 }
