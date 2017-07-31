@@ -1,13 +1,17 @@
-﻿#
-# This script is used to udpate my data management gateway when I don't want my gateway auto updated, but I want to automate it myself.
+﻿# This script is used to udpate my data management gateway when I don't want my gateway auto updated, but I want to automate it myself.
 # And the steps are like this:
 # 1. check my current gateway version
-# 2. check latest gateway version
-# 3. if there is no gateway
+# 2. check latest gateway version or specified version
+# 3. if there is newer version than current version gateway available 
 #    3.1 download gateway msi
 #    3.2 upgrade it
-#
-#
+
+## And here is the usage:
+## 1. Download and install latest gateway
+## PS > .\script-update-gateway.ps1
+## 2. Download and install gateway of specified version
+## PS > .\script-update-gateway.ps1 -version 2.11.6380.20
+
 param([string]$version)
 
 function Get-CurrentGatewayVersion()
