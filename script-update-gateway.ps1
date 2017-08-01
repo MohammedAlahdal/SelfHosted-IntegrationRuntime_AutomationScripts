@@ -20,12 +20,16 @@ function Get-CurrentGatewayVersion()
 
     $baseFolderPath = [System.IO.Path]::GetDirectoryName($registryKeyValue.GetValue("DiacmdPath"))
     $filePath = [System.IO.Path]::Combine($baseFolderPath, "Microsoft.DataTransfer.GatewayManagement.dll")
-    $version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($filePath)
-    #$gatewayVersion = [System.Version]::new($version.FileMajorPart, $version.FileMinorPart, $version.FileBuildPart, $version.FilePrivatePart)
-
-    $msg = "Current gateway: " + $version.FileVersion
-    Write-Host $msg
-    return $version.FileVersion
+    
+    $version = $null
+    if (Test-Path $filePath)
+    {
+        $version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($filePath).FileVersion
+        $msg = "Current gateway: " + $version
+        Write-Host $msg
+    }
+    
+    return $version
 }
 
 function Get-LatestGatewayVersion()
@@ -156,6 +160,11 @@ function Is-64BitSystem
 }
 
 $currentVersion = Get-CurrentGatewayVersion
+if ($currentVersion -eq $null)
+{
+    Write-Host "There is no gateway found on your machine, exiting ..."
+    exit 0
+}
 
 $versionToInstall = $version
 if ([string]::IsNullOrEmpty($versionToInstall))
