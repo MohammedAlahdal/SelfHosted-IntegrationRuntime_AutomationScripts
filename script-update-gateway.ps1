@@ -58,7 +58,7 @@ function Get-RegistryKeyValue
 {
      param($registryPath)
 
-    $is64Bits = Is-64BitSystem
+     $is64Bits = Is-64BitSystem
      if($is64Bits)
      {
           $baseKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry64)
@@ -99,6 +99,12 @@ function Download-GatewayInstaller
     $output = Join-Path $folder "DataManagementGateway.msi"
     (New-Object System.Net.WebClient).DownloadFile($uri, $output)
 
+    $exist = Test-Path($output)
+    if ( $exist -eq $false)
+    {
+        throw "Cannot download specified MSI"
+    }
+
     $msg = "New gateway MSI has been downloaded to " + $output
     Write-Host $msg
     return $output
@@ -136,8 +142,14 @@ function Install-Gateway
         [String]$msi
     )
 
-    Write-Host "Start to install gateway ..."
+    $exist = Test-Path($msi)
+    if ( $exist -eq $false)
+    {
+        throw 'there is no MSI found: $msi'
+    }
 
+
+    Write-Host "Start to install gateway ..."
 
     $arg = "/i " + $msi + " /quiet /norestart"
     Start-Process -FilePath "msiexec.exe" -ArgumentList $arg -Wait -Passthru -NoNewWindow
