@@ -38,7 +38,7 @@ function Get-LatestGatewayVersion()
     $item = $latestGateway.split("/") | Select-Object -Last 1
     if ($item -eq $null -or $item -notlike "DataManagementGateway*")
     {
-        throw new Exception("Can't get latest gateway info")
+        throw "Can't get latest gateway info"
     }
 
     $regexp = '^DataManagementGateway_(\d+\.\d+\.\d+\.\d+) \(64-bit\)\.msi$'
@@ -46,7 +46,7 @@ function Get-LatestGatewayVersion()
     $version = [regex]::Match($item, $regexp).Groups[1].Value
     if ($version -eq $null)
     {
-        throw new Exception("Can't get version from gateway download uri")
+        throw "Can't get version from gateway download uri"
     }
 
     $msg = "Latest gateway: " + $version
