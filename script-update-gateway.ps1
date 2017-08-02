@@ -172,7 +172,7 @@ if ([string]::IsNullOrEmpty($versionToInstall))
     $versionToInstall = Get-LatestGatewayVersion
 }
 
-if ($currentVersion -ge $versionToInstall)
+if ([System.Version]$currentVersion -ge [System.Version]$versionToInstall)
 {
     Write-Host "Your gateway is latest, no update need..."
 }
