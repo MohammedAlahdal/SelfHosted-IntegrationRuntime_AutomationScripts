@@ -182,7 +182,7 @@ $currentVersion = Get-CurrentGatewayVersion
 if ($currentVersion -eq $null)
 {
     Write-Host "There is no gateway found on your machine, exiting ..."
-    exit 0
+    break
 }
 
 $versionToInstall = $version
