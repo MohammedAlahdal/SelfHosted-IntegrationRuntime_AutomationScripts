@@ -36,12 +36,12 @@ function Get-LatestGatewayVersion()
 {
     $latestGateway = Get-RedirectedUrl "https://go.microsoft.com/fwlink/?linkid=839822"
     $item = $latestGateway.split("/") | Select-Object -Last 1
-    if ($item -eq $null -or $item -notlike "DataManagementGateway*")
+    if ($item -eq $null -or $item -notlike "IntegrationRuntime*")
     {
         throw "Can't get latest gateway info"
     }
 
-    $regexp = '^DataManagementGateway_(\d+\.\d+\.\d+\.\d+) \(64-bit\)\.msi$'
+    $regexp = '^IntegrationRuntime_(\d+\.\d+\.\d+\.\d+)((?:\w|%20)+)\(64-bit\)\.msi$'
 
     $version = [regex]::Match($item, $regexp).Groups[1].Value
     if ($version -eq $null)
@@ -96,7 +96,7 @@ function Download-GatewayInstaller
     Write-Host "Start to download MSI"
     $uri = Populate-Url $version
     $folder = New-TempDirectory
-    $output = Join-Path $folder "DataManagementGateway.msi"
+    $output = Join-Path $folder "IntegrationRuntime.msi"
     (New-Object System.Net.WebClient).DownloadFile($uri, $output)
 
     $exist = Test-Path($output)
@@ -119,7 +119,7 @@ function Populate-Url
     
     $uri = Get-RedirectedUrl
     $uri = $uri.Substring(0, $uri.LastIndexOf('/') + 1)
-    $uri += "DataManagementGateway_$version ("
+    $uri += "IntegrationRuntime_$version ("
     
     $is64Bits = Is-64BitSystem
     if ($is64Bits)

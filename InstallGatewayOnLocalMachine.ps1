@@ -44,9 +44,9 @@ function Check-WhetherGatewayInstalled([string]$name)
 function UnInstall-Gateway()
 {
     $installed = $false
-    if (Check-WhetherGatewayInstalled("Microsoft Data Management Gateway"))
+    if (Check-WhetherGatewayInstalled("Microsoft Integration Runtime"))
     {
-        [void](Get-WmiObject -Class Win32_Product -Filter "Name='Microsoft Data Management Gateway Preview' or Name='Microsoft Data Management Gateway'" -ComputerName $env:COMPUTERNAME).Uninstall()
+        [void](Get-WmiObject -Class Win32_Product -Filter "Name='Microsoft Integration Runtime Preview' or Name='Microsoft Integration Runtime'" -ComputerName $env:COMPUTERNAME).Uninstall()
         $installed = $true
     }
 
@@ -58,11 +58,11 @@ function UnInstall-Gateway()
 
     if ($installed -eq $false)
     {
-        Write-Host "Microsoft Data Management Gateway Preview is not installed."
+        Write-Host "Microsoft Integration Runtime Preview is not installed."
         return
     }
 
-    Write-Host "Microsoft Data Management Gateway has been uninstalled from this machine."
+    Write-Host "Microsoft Integration Runtime has been uninstalled from this machine."
 }
 
 function Get-CmdFilePath()
