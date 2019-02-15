@@ -1,7 +1,7 @@
 # Self-hosted Integration Runtime (IR) Automation Scripts
 
 1. **[InstallGatewayOnLocalMachine.ps1](./InstallGatewayOnLocalMachine.ps1)** -  The script can be used to install self-hosted integration runtime node and register it with an authentication key. The script accepts two arguments, **first** specifying the location of the [self-hosted integration runtime](https://www.microsoft.com/download/details.aspx?id=39717) on a local disk, **second** specifying the **authentication key** (for registering self-hosted IR node).
-  *Example: PS D:\GitHub> .\InstallGatewayOnLocalMachine.ps1 E:\shared\IntegrationRuntime.msi <key>*
+  *Example: PS D:\GitHub> .\InstallGatewayOnLocalMachine.ps1 E:\shared\IntegrationRuntime.msi [key]*
 
   <br />
 
