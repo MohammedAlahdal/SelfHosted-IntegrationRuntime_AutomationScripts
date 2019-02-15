@@ -8,7 +8,7 @@
 
 2. **[script-update-gateway.ps1](./script-update-gateway.ps1)** - The script can be used to install the latest or update an existing self-hosted integration runtime to the latest version. It accepts an argument for specifying version number (example: *-version 3.13.6942.1*). When no version is specified, it always updates the self-hosted IR to the latest version found in the [downloads](https://www.microsoft.com/download/details.aspx?id=39717).
    
-   *<u>Note</u>: Only last 3 versions can be specified. Ideally this is used only with the latest version to update an existing node to the latest version.*
+   *<u>Note</u>: Only last 3 versions can be specified. Ideally this is used to update an existing node to the latest version. **IT ASSUMES THAT YOU HAVE A REGISTERED SELF HOSTED IR** *
 
    <u>Usage Examples:</u>
 
