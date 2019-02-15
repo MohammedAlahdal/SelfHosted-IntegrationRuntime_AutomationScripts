@@ -1,9 +1,9 @@
-﻿# This script is used to udpate my data management gateway when I don't want my gateway auto updated, but I want to automate it myself.
+﻿# This script is used to udpate/ install + register latest self-hosted integration runtime.
 # And the steps are like this:
-# 1. check my current gateway version
-# 2. check latest gateway version or specified version
-# 3. if there is newer version than current version gateway available 
-#    3.1 download gateway msi
+# 1. check current self-hosted IR version
+# 2. Get latest version or specified version from argument
+# 3. if there is newer version than current version  
+#    3.1 download self-hosted IR msi
 #    3.2 upgrade it
 
 ## And here is the usage:
